@@ -8,7 +8,7 @@ import ToDoList from "./components/ToDoList";
 
 function App(){
 
-    console.log(auth?.currentUser?.email)
+    
 
     return(
         <Routes>
