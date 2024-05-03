@@ -1,7 +1,7 @@
 import React from 'react'
 import { auth } from '../../config/firebase'
 import { db } from '../../config/firebase'
-import { collection, getDocs, addDoc } from 'firebase/firestore'  
+import { collection, doc, getDocs, addDoc, updateDoc } from 'firebase/firestore'  
 import { useState, useEffect } from 'react'
 
 import ToDoItem from './ToDoItem'
@@ -12,9 +12,11 @@ const ToDoList = () => {
   const [newItemTitle, setNewItemTitle] = useState('')
   const [newItemTime, setNewItemTime] = useState('')
 
+  const [updatedTime, setUpdatedTime] = useState('')
+
   const toDoRef = collection(db, 'todolist')
 
-  console.log(auth?.currentUser?.email)
+  
 
   const getToDoList = async () => {
     try{
@@ -23,6 +25,8 @@ const ToDoList = () => {
             ...doc.data(),
             id: doc.id,
         }))
+        
+        console.log(auth?.currentUser?.email)
         console.log(filteredData)
         setToDoList(filteredData)
     } catch (err) {
@@ -38,7 +42,8 @@ const addItem = async () => {
     try{
         await addDoc(toDoRef, {
             title: newItemTitle,
-            time: newItemTime
+            time: newItemTime,
+            userId: auth?.currentUser?.uid,
         })
 
         getToDoList()
@@ -46,6 +51,23 @@ const addItem = async () => {
         console.log(err)
     }
 }  
+
+const updateItem = async (itemId, updatedTime) => {
+    try{
+        const itemDocRef = doc(db, 'todolist', itemId)
+        await updateDoc(itemDocRef, {
+            time: updatedTime
+        })
+
+        getToDoList()
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+
+
 
   return (
     <div>
@@ -79,7 +101,13 @@ const addItem = async () => {
         <div className="flex justify-center items-center">
         <div className="bg-orange-200 w-[552px] h-[600px] flex flex-col rounded-md">
                 {toDoList.map((toDoItem) => (
-                    <ToDoItem toDoItem={toDoItem}/>
+                    <ToDoItem 
+                        key={toDoItem.id}
+                        toDoItem={toDoItem}
+                        updatedTime={updatedTime}
+                        setUpdatedTime={setUpdatedTime}
+                        updateItem={updateItem}
+                    />
                 ))}
         </div>  
         </div>
