@@ -1,7 +1,7 @@
 import React from 'react'
 import { auth } from '../../config/firebase'
 import { db } from '../../config/firebase'
-import { collection, doc, getDocs, addDoc, updateDoc } from 'firebase/firestore'  
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'  
 import { useState, useEffect } from 'react'
 
 import ToDoItem from './ToDoItem'
@@ -66,7 +66,16 @@ const updateItem = async (itemId, updatedTime) => {
 }
 
 
+const deleteItem = async (itemId) => {
+    try{
+        const itemDocRef = doc(db, 'todolist', itemId)
+        deleteDoc(itemDocRef)
 
+        getToDoList()
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 
   return (
@@ -107,6 +116,7 @@ const updateItem = async (itemId, updatedTime) => {
                         updatedTime={updatedTime}
                         setUpdatedTime={setUpdatedTime}
                         updateItem={updateItem}
+                        deleteItem={deleteItem}
                     />
                 ))}
         </div>  

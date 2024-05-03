@@ -1,9 +1,11 @@
 import React from 'react'
 import { TiEdit } from 'react-icons/ti'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 
 
-const ToDoItem = ({toDoItem, updatedTime, setUpdatedTime, updateItem}) => {
+const ToDoItem = ({toDoItem, updatedTime, setUpdatedTime, updateItem, deleteItem}) => {
 
   const [accordionOpen, setAccordionOpen] = useState(false)
 
@@ -23,8 +25,9 @@ const ToDoItem = ({toDoItem, updatedTime, setUpdatedTime, updateItem}) => {
         <h1>{toDoItem.title}</h1>
         <p>{toDoItem.time}</p>
       </div>
-      <div className='mt-4' onClick={() => setAccordionOpen(!accordionOpen)}>
-        <TiEdit />
+      <div className='mt-4 flex space-x-3' >
+        <TiEdit onClick={() => setAccordionOpen(!accordionOpen)}/>
+        <FontAwesomeIcon icon={faTrash} onClick={()=> deleteItem(toDoItem.id)}/> 
       </div>
     </div>
     <div className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
